@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 import {
     findUserByEmail,
@@ -6,6 +7,7 @@ import {
 } from './auth.repository.js';
 
 import type { RegisterInput } from './auth.types.js';
+import type { LoginInput } from './auth.types.js'
 
 export class AuthError extends Error {
     constructor(message: string, public statusCode: number){
@@ -41,3 +43,50 @@ export const registerUser = async(data: RegisterInput) => {
     return user;
 
 }
+
+export const loginUser = async(data: LoginInput) => {
+    if(typeof data?.email !== "string" || typeof data?.password !== "string") {
+        throw new AuthError("Email and password are required", 400);
+    }
+
+    const email =  data.email.trim().toLowerCase();
+    const password = data.password;
+
+    if(!email || !password){
+        throw new AuthError("Email and password are required", 400);
+    }
+
+    //Find user in database
+    const user = await findUserByEmail(email);
+
+    if(!user){
+        throw new AuthError("Invalid email or password", 401);
+    }
+
+    //2. Compare password with stored hash
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if(!isPasswordValid){
+        throw new AuthError("Invalid email or password", 401)
+    }
+
+    //generate JWT
+    const secret = process.env.JWT_SECRET;
+
+    if(!secret){
+        throw new Error("JWT secret is not defined in environment variables");
+    }
+
+    const token = jwt.sign(
+        { sub: user.id },
+        secret,
+        { expiresIn: "15m", algorithm: "HS256" }
+    )
+    
+    return {
+        accessToken: token,
+        user: {
+            id: user.id,
+            email: user.email,
+        },
+    };
+};
