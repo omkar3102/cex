@@ -13,4 +13,61 @@ model User {
     password  String
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
+
+    wallets   Wallet[]
+}
+
+model Asset {
+  id        String   @id @default(uuid())
+  symbol    String   @unique
+  name      String
+  decimals  Int
+  isActive  Boolean  @default(true)
+
+  wallets   Wallet[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Wallet {
+  id               String   @id @default(uuid())
+
+  userId           String
+  assetId          String
+
+  availableBalance Decimal  @default(0) @db.Decimal(36, 18)
+  lockedBalance    Decimal  @default(0) @db.Decimal(36, 18)
+
+  user             User     @relation(fields: [userId], references: [id])
+  asset            Asset    @relation(fields: [assetId], references: [id])
+
+  ledgerEntries    LedgerEntry[]
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([userId, assetId])
+  @@index([userId])
+  @@index([assetId])
+}
+
+model LedgerEntry {
+  id             String   @id @default(uuid())
+
+  walletId       String
+
+  type           String
+  availableDelta Decimal  @db.Decimal(36, 18)
+  lockedDelta    Decimal  @db.Decimal(36, 18)
+
+  referenceType  String?
+  referenceId    String?
+
+  wallet         Wallet   @relation(fields: [walletId], references: [id])
+
+  createdAt      DateTime @default(now())
+
+  @@index([walletId, createdAt])
+  @@index([referenceType, referenceId])
 }
