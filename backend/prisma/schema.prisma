@@ -64,6 +64,8 @@ model LedgerEntry {
   referenceType  String?
   referenceId    String?
 
+  idempotencyKey String? @unique
+
   wallet         Wallet   @relation(fields: [walletId], references: [id])
 
   createdAt      DateTime @default(now())

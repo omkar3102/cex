@@ -800,6 +800,7 @@ export const LedgerEntryScalarFieldEnum = {
   lockedDelta: 'lockedDelta',
   referenceType: 'referenceType',
   referenceId: 'referenceId',
+  idempotencyKey: 'idempotencyKey',
   createdAt: 'createdAt'
 } as const
 
