@@ -3,8 +3,9 @@ import jwt from 'jsonwebtoken';
 
 import {
     findUserByEmail,
-    createUser,
+    createUserWithWallets,
 } from './auth.repository.js';
+
 
 import type { RegisterInput } from './auth.types.js';
 import type { LoginInput } from './auth.types.js'
@@ -38,9 +39,26 @@ export const registerUser = async(data: RegisterInput) => {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     //create user
-    const user = await createUser(email, hashedPassword);
+    try {
 
-    return user;
+        const user = await createUserWithWallets(email, hashedPassword);
+    
+        return user;
+    } catch(error) {
+        //handle concurrent duplicate registrations
+        if( typeof error === "object" && 
+            error !== null &&
+            "code" in error &&
+            error.code === "P2002"
+        ) {
+            throw new AuthError(
+                "Email already registered",
+                409
+            )
+        }
+
+        throw error;
+    }
 
 }
 

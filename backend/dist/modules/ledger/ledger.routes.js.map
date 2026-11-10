@@ -1,0 +1,1 @@
+{"version":3,"file":"ledger.routes.js","sourceRoot":"","sources":["../../../src/modules/ledger/ledger.routes.ts"],"names":[],"mappings":"AAAA,OAAO,EAAC,MAAM,EAAC,MAAM,SAAS,CAAC;AAE/B,OAAO,EAAE,YAAY,EAAE,MAAM,qCAAqC,CAAC;AAEnE,OAAO,EAAC,OAAO,EAAE,MAAM,wBAAwB,CAAC;AAEhD,MAAM,MAAM,GAAG,MAAM,EAAE,CAAA;AAEvB,MAAM,CAAC,IAAI,CAAC,UAAU,EAAE,YAAY,EAAE,OAAO,CAAC,CAAC;AAG/C,eAAe,MAAM,CAAC"}

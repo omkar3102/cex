@@ -10,3 +10,17 @@ export const findActiveAssets = async () => {
         },
     });
 };
+
+export const findActiveAssetBySymbol = async (symbol: string) => {
+    return prisma.asset.findFirst({
+        where: {
+            symbol,
+            isActive: true,
+        }, select: {
+            id: true,
+            symbol: true,
+            name: true,
+            decimals: true
+        },
+    });
+}

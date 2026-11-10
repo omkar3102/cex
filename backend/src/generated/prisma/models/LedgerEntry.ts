@@ -44,6 +44,7 @@ export type LedgerEntryMinAggregateOutputType = {
   lockedDelta: runtime.Decimal | null
   referenceType: string | null
   referenceId: string | null
+  idempotencyKey: string | null
   createdAt: Date | null
 }
 
@@ -55,6 +56,7 @@ export type LedgerEntryMaxAggregateOutputType = {
   lockedDelta: runtime.Decimal | null
   referenceType: string | null
   referenceId: string | null
+  idempotencyKey: string | null
   createdAt: Date | null
 }
 
@@ -66,6 +68,7 @@ export type LedgerEntryCountAggregateOutputType = {
   lockedDelta: number
   referenceType: number
   referenceId: number
+  idempotencyKey: number
   createdAt: number
   _all: number
 }
@@ -89,6 +92,7 @@ export type LedgerEntryMinAggregateInputType = {
   lockedDelta?: true
   referenceType?: true
   referenceId?: true
+  idempotencyKey?: true
   createdAt?: true
 }
 
@@ -100,6 +104,7 @@ export type LedgerEntryMaxAggregateInputType = {
   lockedDelta?: true
   referenceType?: true
   referenceId?: true
+  idempotencyKey?: true
   createdAt?: true
 }
 
@@ -111,6 +116,7 @@ export type LedgerEntryCountAggregateInputType = {
   lockedDelta?: true
   referenceType?: true
   referenceId?: true
+  idempotencyKey?: true
   createdAt?: true
   _all?: true
 }
@@ -209,6 +215,7 @@ export type LedgerEntryGroupByOutputType = {
   lockedDelta: runtime.Decimal
   referenceType: string | null
   referenceId: string | null
+  idempotencyKey: string | null
   createdAt: Date
   _count: LedgerEntryCountAggregateOutputType | null
   _avg: LedgerEntryAvgAggregateOutputType | null
@@ -243,6 +250,7 @@ export type LedgerEntryWhereInput = {
   lockedDelta?: Prisma.DecimalFilter<"LedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: Prisma.StringNullableFilter<"LedgerEntry"> | string | null
   referenceId?: Prisma.StringNullableFilter<"LedgerEntry"> | string | null
+  idempotencyKey?: Prisma.StringNullableFilter<"LedgerEntry"> | string | null
   createdAt?: Prisma.DateTimeFilter<"LedgerEntry"> | Date | string
   wallet?: Prisma.XOR<Prisma.WalletScalarRelationFilter, Prisma.WalletWhereInput>
 }
@@ -255,12 +263,14 @@ export type LedgerEntryOrderByWithRelationInput = {
   lockedDelta?: Prisma.SortOrder
   referenceType?: Prisma.SortOrderInput | Prisma.SortOrder
   referenceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   wallet?: Prisma.WalletOrderByWithRelationInput
 }
 
 export type LedgerEntryWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  idempotencyKey?: string
   AND?: Prisma.LedgerEntryWhereInput | Prisma.LedgerEntryWhereInput[]
   OR?: Prisma.LedgerEntryWhereInput[]
   NOT?: Prisma.LedgerEntryWhereInput | Prisma.LedgerEntryWhereInput[]
@@ -272,7 +282,7 @@ export type LedgerEntryWhereUniqueInput = Prisma.AtLeast<{
   referenceId?: Prisma.StringNullableFilter<"LedgerEntry"> | string | null
   createdAt?: Prisma.DateTimeFilter<"LedgerEntry"> | Date | string
   wallet?: Prisma.XOR<Prisma.WalletScalarRelationFilter, Prisma.WalletWhereInput>
-}, "id">
+}, "id" | "idempotencyKey">
 
 export type LedgerEntryOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -282,6 +292,7 @@ export type LedgerEntryOrderByWithAggregationInput = {
   lockedDelta?: Prisma.SortOrder
   referenceType?: Prisma.SortOrderInput | Prisma.SortOrder
   referenceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.LedgerEntryCountOrderByAggregateInput
   _avg?: Prisma.LedgerEntryAvgOrderByAggregateInput
@@ -301,6 +312,7 @@ export type LedgerEntryScalarWhereWithAggregatesInput = {
   lockedDelta?: Prisma.DecimalWithAggregatesFilter<"LedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: Prisma.StringNullableWithAggregatesFilter<"LedgerEntry"> | string | null
   referenceId?: Prisma.StringNullableWithAggregatesFilter<"LedgerEntry"> | string | null
+  idempotencyKey?: Prisma.StringNullableWithAggregatesFilter<"LedgerEntry"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"LedgerEntry"> | Date | string
 }
 
@@ -311,6 +323,7 @@ export type LedgerEntryCreateInput = {
   lockedDelta: runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: string | null
   referenceId?: string | null
+  idempotencyKey?: string | null
   createdAt?: Date | string
   wallet: Prisma.WalletCreateNestedOneWithoutLedgerEntriesInput
 }
@@ -323,6 +336,7 @@ export type LedgerEntryUncheckedCreateInput = {
   lockedDelta: runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: string | null
   referenceId?: string | null
+  idempotencyKey?: string | null
   createdAt?: Date | string
 }
 
@@ -333,6 +347,7 @@ export type LedgerEntryUpdateInput = {
   lockedDelta?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUpdateOneRequiredWithoutLedgerEntriesNestedInput
 }
@@ -345,6 +360,7 @@ export type LedgerEntryUncheckedUpdateInput = {
   lockedDelta?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -356,6 +372,7 @@ export type LedgerEntryCreateManyInput = {
   lockedDelta: runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: string | null
   referenceId?: string | null
+  idempotencyKey?: string | null
   createdAt?: Date | string
 }
 
@@ -366,6 +383,7 @@ export type LedgerEntryUpdateManyMutationInput = {
   lockedDelta?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -377,6 +395,7 @@ export type LedgerEntryUncheckedUpdateManyInput = {
   lockedDelta?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -398,6 +417,7 @@ export type LedgerEntryCountOrderByAggregateInput = {
   lockedDelta?: Prisma.SortOrder
   referenceType?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -414,6 +434,7 @@ export type LedgerEntryMaxOrderByAggregateInput = {
   lockedDelta?: Prisma.SortOrder
   referenceType?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -425,6 +446,7 @@ export type LedgerEntryMinOrderByAggregateInput = {
   lockedDelta?: Prisma.SortOrder
   referenceType?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -486,6 +508,7 @@ export type LedgerEntryCreateWithoutWalletInput = {
   lockedDelta: runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: string | null
   referenceId?: string | null
+  idempotencyKey?: string | null
   createdAt?: Date | string
 }
 
@@ -496,6 +519,7 @@ export type LedgerEntryUncheckedCreateWithoutWalletInput = {
   lockedDelta: runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: string | null
   referenceId?: string | null
+  idempotencyKey?: string | null
   createdAt?: Date | string
 }
 
@@ -536,6 +560,7 @@ export type LedgerEntryScalarWhereInput = {
   lockedDelta?: Prisma.DecimalFilter<"LedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: Prisma.StringNullableFilter<"LedgerEntry"> | string | null
   referenceId?: Prisma.StringNullableFilter<"LedgerEntry"> | string | null
+  idempotencyKey?: Prisma.StringNullableFilter<"LedgerEntry"> | string | null
   createdAt?: Prisma.DateTimeFilter<"LedgerEntry"> | Date | string
 }
 
@@ -546,6 +571,7 @@ export type LedgerEntryCreateManyWalletInput = {
   lockedDelta: runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: string | null
   referenceId?: string | null
+  idempotencyKey?: string | null
   createdAt?: Date | string
 }
 
@@ -556,6 +582,7 @@ export type LedgerEntryUpdateWithoutWalletInput = {
   lockedDelta?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -566,6 +593,7 @@ export type LedgerEntryUncheckedUpdateWithoutWalletInput = {
   lockedDelta?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -576,6 +604,7 @@ export type LedgerEntryUncheckedUpdateManyWithoutWalletInput = {
   lockedDelta?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   referenceType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -589,6 +618,7 @@ export type LedgerEntrySelect<ExtArgs extends runtime.Types.Extensions.InternalA
   lockedDelta?: boolean
   referenceType?: boolean
   referenceId?: boolean
+  idempotencyKey?: boolean
   createdAt?: boolean
   wallet?: boolean | Prisma.WalletDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ledgerEntry"]>
@@ -601,6 +631,7 @@ export type LedgerEntrySelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   lockedDelta?: boolean
   referenceType?: boolean
   referenceId?: boolean
+  idempotencyKey?: boolean
   createdAt?: boolean
   wallet?: boolean | Prisma.WalletDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ledgerEntry"]>
@@ -613,6 +644,7 @@ export type LedgerEntrySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   lockedDelta?: boolean
   referenceType?: boolean
   referenceId?: boolean
+  idempotencyKey?: boolean
   createdAt?: boolean
   wallet?: boolean | Prisma.WalletDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ledgerEntry"]>
@@ -625,10 +657,11 @@ export type LedgerEntrySelectScalar = {
   lockedDelta?: boolean
   referenceType?: boolean
   referenceId?: boolean
+  idempotencyKey?: boolean
   createdAt?: boolean
 }
 
-export type LedgerEntryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "walletId" | "type" | "availableDelta" | "lockedDelta" | "referenceType" | "referenceId" | "createdAt", ExtArgs["result"]["ledgerEntry"]>
+export type LedgerEntryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "walletId" | "type" | "availableDelta" | "lockedDelta" | "referenceType" | "referenceId" | "idempotencyKey" | "createdAt", ExtArgs["result"]["ledgerEntry"]>
 export type LedgerEntryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   wallet?: boolean | Prisma.WalletDefaultArgs<ExtArgs>
 }
@@ -652,6 +685,7 @@ export type $LedgerEntryPayload<ExtArgs extends runtime.Types.Extensions.Interna
     lockedDelta: runtime.Decimal
     referenceType: string | null
     referenceId: string | null
+    idempotencyKey: string | null
     createdAt: Date
   }, ExtArgs["result"]["ledgerEntry"]>
   composites: {}
@@ -1084,6 +1118,7 @@ export interface LedgerEntryFieldRefs {
   readonly lockedDelta: Prisma.FieldRef<"LedgerEntry", 'Decimal'>
   readonly referenceType: Prisma.FieldRef<"LedgerEntry", 'String'>
   readonly referenceId: Prisma.FieldRef<"LedgerEntry", 'String'>
+  readonly idempotencyKey: Prisma.FieldRef<"LedgerEntry", 'String'>
   readonly createdAt: Prisma.FieldRef<"LedgerEntry", 'DateTime'>
 }
     
