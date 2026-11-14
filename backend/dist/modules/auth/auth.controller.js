@@ -28,10 +28,26 @@ export const login = async (req, res) => {
     try {
         const data = req.body;
         const result = await loginUser(data);
+        const isProduction = process.env.NODE_ENV === "production";
+        //Access token cookies: 15 minutes
+        res.cookie("accessToken", result.accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 15 * 60 * 1000,
+            path: "/",
+        });
+        res.cookie("refreshToken", result.refreshToken, {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            path: "/api/auth",
+        });
         return res.status(200).json({
             success: true,
             message: "User logged in successfully",
-            data: result,
+            data: result.user,
         });
     }
     catch (error) {

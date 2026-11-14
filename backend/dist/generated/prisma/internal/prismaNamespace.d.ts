@@ -248,6 +248,7 @@ export declare const ModelName: {
     readonly Asset: 'Asset';
     readonly Wallet: 'Wallet';
     readonly LedgerEntry: 'LedgerEntry';
+    readonly RefreshSession: 'RefreshSession';
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export interface TypeMapCb<GlobalOmitOptions = {}> extends runtime.Types.Utils.Fn<{
@@ -260,7 +261,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: "user" | "asset" | "wallet" | "ledgerEntry";
+        modelProps: "user" | "asset" | "wallet" | "ledgerEntry" | "refreshSession";
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
@@ -560,6 +561,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 };
             };
         };
+        RefreshSession: {
+            payload: Prisma.$RefreshSessionPayload<ExtArgs>;
+            fields: Prisma.RefreshSessionFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.RefreshSessionFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshSessionPayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.RefreshSessionFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshSessionPayload>;
+                };
+                findFirst: {
+                    args: Prisma.RefreshSessionFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshSessionPayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.RefreshSessionFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshSessionPayload>;
+                };
+                findMany: {
+                    args: Prisma.RefreshSessionFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshSessionPayload>[];
+                };
+                create: {
+                    args: Prisma.RefreshSessionCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshSessionPayload>;
+                };
+                createMany: {
+                    args: Prisma.RefreshSessionCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                createManyAndReturn: {
+                    args: Prisma.RefreshSessionCreateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshSessionPayload>[];
+                };
+                delete: {
+                    args: Prisma.RefreshSessionDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshSessionPayload>;
+                };
+                update: {
+                    args: Prisma.RefreshSessionUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshSessionPayload>;
+                };
+                deleteMany: {
+                    args: Prisma.RefreshSessionDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.RefreshSessionUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateManyAndReturn: {
+                    args: Prisma.RefreshSessionUpdateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshSessionPayload>[];
+                };
+                upsert: {
+                    args: Prisma.RefreshSessionUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshSessionPayload>;
+                };
+                aggregate: {
+                    args: Prisma.RefreshSessionAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateRefreshSession>;
+                };
+                groupBy: {
+                    args: Prisma.RefreshSessionGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.RefreshSessionGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.RefreshSessionCountArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.RefreshSessionCountAggregateOutputType> | number;
+                };
+            };
+        };
     };
 } & {
     other: {
@@ -634,6 +709,16 @@ export declare const LedgerEntryScalarFieldEnum: {
     readonly createdAt: 'createdAt';
 };
 export type LedgerEntryScalarFieldEnum = (typeof LedgerEntryScalarFieldEnum)[keyof typeof LedgerEntryScalarFieldEnum];
+export declare const RefreshSessionScalarFieldEnum: {
+    readonly id: 'id';
+    readonly userId: 'userId';
+    readonly tokenHash: 'tokenHash';
+    readonly familyId: 'familyId';
+    readonly expiresAt: 'expiresAt';
+    readonly revokedAt: 'revokedAt';
+    readonly createdAt: 'createdAt';
+};
+export type RefreshSessionScalarFieldEnum = (typeof RefreshSessionScalarFieldEnum)[keyof typeof RefreshSessionScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: 'asc';
     readonly desc: 'desc';
@@ -847,6 +932,7 @@ export type GlobalOmitConfig = {
     asset?: Prisma.AssetOmit;
     wallet?: Prisma.WalletOmit;
     ledgerEntry?: Prisma.LedgerEntryOmit;
+    refreshSession?: Prisma.RefreshSessionOmit;
 };
 export type LogLevel = 'info' | 'query' | 'warn' | 'error';
 export type LogDefinition = {

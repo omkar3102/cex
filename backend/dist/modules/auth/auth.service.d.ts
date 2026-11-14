@@ -12,9 +12,14 @@ export declare const registerUser: (data: RegisterInput) => Promise<{
 }>;
 export declare const loginUser: (data: LoginInput) => Promise<{
     accessToken: string;
+    refreshToken: string;
     user: {
         id: string;
         email: string;
     };
+}>;
+export declare const refreshUserSession: (refreshToken: unknown) => Promise<{
+    accessToken: string;
+    refreshToken: string;
 }>;
 //# sourceMappingURL=auth.service.d.ts.map

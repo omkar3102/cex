@@ -30,6 +30,7 @@ export declare const ModelName: {
     readonly Asset: 'Asset';
     readonly Wallet: 'Wallet';
     readonly LedgerEntry: 'LedgerEntry';
+    readonly RefreshSession: 'RefreshSession';
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
@@ -79,6 +80,16 @@ export declare const LedgerEntryScalarFieldEnum: {
     readonly createdAt: 'createdAt';
 };
 export type LedgerEntryScalarFieldEnum = (typeof LedgerEntryScalarFieldEnum)[keyof typeof LedgerEntryScalarFieldEnum];
+export declare const RefreshSessionScalarFieldEnum: {
+    readonly id: 'id';
+    readonly userId: 'userId';
+    readonly tokenHash: 'tokenHash';
+    readonly familyId: 'familyId';
+    readonly expiresAt: 'expiresAt';
+    readonly revokedAt: 'revokedAt';
+    readonly createdAt: 'createdAt';
+};
+export type RefreshSessionScalarFieldEnum = (typeof RefreshSessionScalarFieldEnum)[keyof typeof RefreshSessionScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: 'asc';
     readonly desc: 'desc';

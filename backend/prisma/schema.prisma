@@ -8,13 +8,14 @@ datasource db {
 }
 
 model User {
-    id        String    @id @default(uuid())
-    email     String    @unique
-    password  String
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
+    id               String    @id @default(uuid())
+    email            String    @unique
+    password         String
+    createdAt        DateTime  @default(now())
+    updatedAt        DateTime  @updatedAt
 
-    wallets   Wallet[]
+    wallets          Wallet[]
+    refreshSessions RefreshSession[]
 }
 
 model Asset {
@@ -72,4 +73,21 @@ model LedgerEntry {
 
   @@index([walletId, createdAt])
   @@index([referenceType, referenceId])
+}
+
+model RefreshSession {
+  id         String      @id @default(uuid())
+  userId     String
+  tokenHash  String      @unique
+  familyId   String
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime    @default(now())
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([familyId])
+  @@index([expiresAt])
+
 }

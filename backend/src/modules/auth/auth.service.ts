@@ -1,10 +1,15 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { generateRefreshToken, hashRefreshToken } from './token.service.js';
 
 import {
     findUserByEmail,
     createUserWithWallets,
 } from './auth.repository.js';
+
+
+// import { generateRefreshToken  } from './token.service.js';
+import { createRefreshSession, findRefreshSession, rotateRefreshSession } from './session.repository.js';
 
 
 import type { RegisterInput } from './auth.types.js';
@@ -94,17 +99,99 @@ export const loginUser = async(data: LoginInput) => {
         throw new Error("JWT secret is not defined in environment variables");
     }
 
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
         { sub: user.id },
         secret,
         { expiresIn: "15m", algorithm: "HS256" }
-    )
+    );
+
+    //generate refresh token
+    const refreshSession = generateRefreshToken();
+
+    //store hashed refresh token in PostgreSQL
+    await createRefreshSession({
+        userId: user.id,
+        tokenHash: refreshSession.tokenHash,
+        familyId: refreshSession.familyId,
+        expiresAt: refreshSession.expiresAt,
+    });
     
     return {
-        accessToken: token,
+        accessToken,
+        refreshToken: refreshSession.refreshToken,
         user: {
             id: user.id,
             email: user.email,
         },
     };
+};
+
+
+export const refreshUserSession = async (refreshToken : unknown) => {
+    //1. Validate the incoming refresh token
+    if (
+        typeof refreshToken !== "string" ||
+        !refreshToken.trim()
+    ) {
+        throw new AuthError("Refresh token is required", 401);
+    }
+
+    //2. Hash the incoming token
+    const oldTokenHash = hashRefreshToken(refreshToken);
+
+    //3. Find the existing refresh session
+    const existingSession  = await findRefreshSession(oldTokenHash);
+
+    if(!existingSession) {
+        throw new AuthError("Invalid refresh token", 401);
+    }
+
+    //4. Generate a replacement token in the same family
+    const newRefreshSession = generateRefreshToken(
+        existingSession.familyId
+    );
+
+    //5. Atomically revoke the old token and create new session
+    const rotationResult = await rotateRefreshSession({
+        oldTokenHash,
+        newTokenHash: newRefreshSession.tokenHash,
+        newExpiresAt: newRefreshSession.expiresAt,
+    });
+
+    //6. handle rotation failures
+    if (rotationResult.status === "REUSED") {
+        throw new AuthError(
+            "Refresh token reuse detected. Please log in again",
+            401
+        )
+    }
+
+    if (
+        rotationResult.status === "EXPIRED" ||
+        rotationResult.status === "NOT_FOUND"
+    ) {
+        throw new AuthError("Invalid or expired refresh token", 401);
+    }
+
+
+    const secret = process.env.JWT_SECRET;
+
+    if(!secret) {
+        throw new Error("JWT_SECRET is not configured");
+    }
+
+    const accessToken = jwt.sign(
+        { sub: rotationResult.userId },
+        secret,
+        {
+            expiresIn: "15m",
+            algorithm: "HS256"
+        }
+    );
+
+    return {
+        accessToken,
+        refreshToken: newRefreshSession.refreshToken,
+    };
+
 };

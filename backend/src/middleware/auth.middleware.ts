@@ -1,4 +1,3 @@
-import { error } from 'console';
 import type {Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
@@ -13,17 +12,18 @@ export const authenticate = (
 ) => {
     try {
 
-        const authHeader = req.headers.authorization;
+        // const authHeader = req.headers.authorization;
+        const token = req.cookies?.accessToken;
     
-        if(!authHeader || !authHeader.startsWith("Bearer ")){
-            return res.status(401).json({
-                success: false,
-                message: "Authentication token missing or invalid",
-            })
-        }
+        // if(!authHeader || !authHeader.startsWith("Bearer ")){
+        //     return res.status(401).json({
+        //         success: false,
+        //         message: "Authentication token missing or invalid",
+        //     })
+        // }
     
         // Extract token
-        const token = authHeader.split(" ")[1];
+        // const token = authHeader.split(" ")[1];
     
         if(!token){
             return res.status(401).json({

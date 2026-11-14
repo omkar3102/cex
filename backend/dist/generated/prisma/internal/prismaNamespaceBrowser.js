@@ -42,7 +42,8 @@ export const ModelName = {
     User: 'User',
     Asset: 'Asset',
     Wallet: 'Wallet',
-    LedgerEntry: 'LedgerEntry'
+    LedgerEntry: 'LedgerEntry',
+    RefreshSession: 'RefreshSession'
 };
 /*
  * Enums
@@ -87,6 +88,15 @@ export const LedgerEntryScalarFieldEnum = {
     referenceType: 'referenceType',
     referenceId: 'referenceId',
     idempotencyKey: 'idempotencyKey',
+    createdAt: 'createdAt'
+};
+export const RefreshSessionScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    tokenHash: 'tokenHash',
+    familyId: 'familyId',
+    expiresAt: 'expiresAt',
+    revokedAt: 'revokedAt',
     createdAt: 'createdAt'
 };
 export const SortOrder = {
