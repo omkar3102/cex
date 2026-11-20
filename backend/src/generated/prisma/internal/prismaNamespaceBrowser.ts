@@ -55,7 +55,9 @@ export const ModelName = {
   Asset: 'Asset',
   Wallet: 'Wallet',
   LedgerEntry: 'LedgerEntry',
-  RefreshSession: 'RefreshSession'
+  RefreshSession: 'RefreshSession',
+  TradingPair: 'TradingPair',
+  Order: 'Order'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -137,6 +139,38 @@ export const RefreshSessionScalarFieldEnum = {
 } as const
 
 export type RefreshSessionScalarFieldEnum = (typeof RefreshSessionScalarFieldEnum)[keyof typeof RefreshSessionScalarFieldEnum]
+
+
+export const TradingPairScalarFieldEnum = {
+  id: 'id',
+  symbol: 'symbol',
+  baseAssetId: 'baseAssetId',
+  quoteAssetId: 'quoteAssetId',
+  priceDecimals: 'priceDecimals',
+  quantityDecimal: 'quantityDecimal',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TradingPairScalarFieldEnum = (typeof TradingPairScalarFieldEnum)[keyof typeof TradingPairScalarFieldEnum]
+
+
+export const OrderScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tradingPairId: 'tradingPairId',
+  side: 'side',
+  type: 'type',
+  status: 'status',
+  price: 'price',
+  quantity: 'quantity',
+  filledQuantity: 'filledQuantity',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
 
 
 export const SortOrder = {

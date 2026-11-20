@@ -42,3 +42,13 @@ export type LedgerEntry = Prisma.LedgerEntryModel
  * 
  */
 export type RefreshSession = Prisma.RefreshSessionModel
+/**
+ * Model TradingPair
+ * 
+ */
+export type TradingPair = Prisma.TradingPairModel
+/**
+ * Model Order
+ * 
+ */
+export type Order = Prisma.OrderModel

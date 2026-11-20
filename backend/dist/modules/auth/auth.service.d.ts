@@ -18,6 +18,7 @@ export declare const loginUser: (data: LoginInput) => Promise<{
         email: string;
     };
 }>;
+export declare const logoutUser: (refreshToken: unknown) => Promise<void>;
 export declare const refreshUserSession: (refreshToken: unknown) => Promise<{
     accessToken: string;
     refreshToken: string;

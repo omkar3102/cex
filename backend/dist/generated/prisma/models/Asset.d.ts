@@ -185,6 +185,8 @@ export type AssetWhereInput = {
     createdAt?: Prisma.DateTimeFilter<"Asset"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Asset"> | Date | string;
     wallets?: Prisma.WalletListRelationFilter;
+    baseTradingPairs?: Prisma.TradingPairListRelationFilter;
+    quoteTradingPairs?: Prisma.TradingPairListRelationFilter;
 };
 export type AssetOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
@@ -195,6 +197,8 @@ export type AssetOrderByWithRelationInput = {
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     wallets?: Prisma.WalletOrderByRelationAggregateInput;
+    baseTradingPairs?: Prisma.TradingPairOrderByRelationAggregateInput;
+    quoteTradingPairs?: Prisma.TradingPairOrderByRelationAggregateInput;
 };
 export type AssetWhereUniqueInput = Prisma.AtLeast<{
     id?: string;
@@ -208,6 +212,8 @@ export type AssetWhereUniqueInput = Prisma.AtLeast<{
     createdAt?: Prisma.DateTimeFilter<"Asset"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Asset"> | Date | string;
     wallets?: Prisma.WalletListRelationFilter;
+    baseTradingPairs?: Prisma.TradingPairListRelationFilter;
+    quoteTradingPairs?: Prisma.TradingPairListRelationFilter;
 }, "id" | "symbol">;
 export type AssetOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
@@ -244,6 +250,8 @@ export type AssetCreateInput = {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     wallets?: Prisma.WalletCreateNestedManyWithoutAssetInput;
+    baseTradingPairs?: Prisma.TradingPairCreateNestedManyWithoutBaseAssetInput;
+    quoteTradingPairs?: Prisma.TradingPairCreateNestedManyWithoutQuoteAssetInput;
 };
 export type AssetUncheckedCreateInput = {
     id?: string;
@@ -254,6 +262,8 @@ export type AssetUncheckedCreateInput = {
     createdAt?: Date | string;
     updatedAt?: Date | string;
     wallets?: Prisma.WalletUncheckedCreateNestedManyWithoutAssetInput;
+    baseTradingPairs?: Prisma.TradingPairUncheckedCreateNestedManyWithoutBaseAssetInput;
+    quoteTradingPairs?: Prisma.TradingPairUncheckedCreateNestedManyWithoutQuoteAssetInput;
 };
 export type AssetUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -264,6 +274,8 @@ export type AssetUpdateInput = {
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     wallets?: Prisma.WalletUpdateManyWithoutAssetNestedInput;
+    baseTradingPairs?: Prisma.TradingPairUpdateManyWithoutBaseAssetNestedInput;
+    quoteTradingPairs?: Prisma.TradingPairUpdateManyWithoutQuoteAssetNestedInput;
 };
 export type AssetUncheckedUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -274,6 +286,8 @@ export type AssetUncheckedUpdateInput = {
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     wallets?: Prisma.WalletUncheckedUpdateManyWithoutAssetNestedInput;
+    baseTradingPairs?: Prisma.TradingPairUncheckedUpdateManyWithoutBaseAssetNestedInput;
+    quoteTradingPairs?: Prisma.TradingPairUncheckedUpdateManyWithoutQuoteAssetNestedInput;
 };
 export type AssetCreateManyInput = {
     id?: string;
@@ -361,6 +375,30 @@ export type AssetUpdateOneRequiredWithoutWalletsNestedInput = {
     connect?: Prisma.AssetWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.AssetUpdateToOneWithWhereWithoutWalletsInput, Prisma.AssetUpdateWithoutWalletsInput>, Prisma.AssetUncheckedUpdateWithoutWalletsInput>;
 };
+export type AssetCreateNestedOneWithoutBaseTradingPairsInput = {
+    create?: Prisma.XOR<Prisma.AssetCreateWithoutBaseTradingPairsInput, Prisma.AssetUncheckedCreateWithoutBaseTradingPairsInput>;
+    connectOrCreate?: Prisma.AssetCreateOrConnectWithoutBaseTradingPairsInput;
+    connect?: Prisma.AssetWhereUniqueInput;
+};
+export type AssetCreateNestedOneWithoutQuoteTradingPairsInput = {
+    create?: Prisma.XOR<Prisma.AssetCreateWithoutQuoteTradingPairsInput, Prisma.AssetUncheckedCreateWithoutQuoteTradingPairsInput>;
+    connectOrCreate?: Prisma.AssetCreateOrConnectWithoutQuoteTradingPairsInput;
+    connect?: Prisma.AssetWhereUniqueInput;
+};
+export type AssetUpdateOneRequiredWithoutBaseTradingPairsNestedInput = {
+    create?: Prisma.XOR<Prisma.AssetCreateWithoutBaseTradingPairsInput, Prisma.AssetUncheckedCreateWithoutBaseTradingPairsInput>;
+    connectOrCreate?: Prisma.AssetCreateOrConnectWithoutBaseTradingPairsInput;
+    upsert?: Prisma.AssetUpsertWithoutBaseTradingPairsInput;
+    connect?: Prisma.AssetWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.AssetUpdateToOneWithWhereWithoutBaseTradingPairsInput, Prisma.AssetUpdateWithoutBaseTradingPairsInput>, Prisma.AssetUncheckedUpdateWithoutBaseTradingPairsInput>;
+};
+export type AssetUpdateOneRequiredWithoutQuoteTradingPairsNestedInput = {
+    create?: Prisma.XOR<Prisma.AssetCreateWithoutQuoteTradingPairsInput, Prisma.AssetUncheckedCreateWithoutQuoteTradingPairsInput>;
+    connectOrCreate?: Prisma.AssetCreateOrConnectWithoutQuoteTradingPairsInput;
+    upsert?: Prisma.AssetUpsertWithoutQuoteTradingPairsInput;
+    connect?: Prisma.AssetWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.AssetUpdateToOneWithWhereWithoutQuoteTradingPairsInput, Prisma.AssetUpdateWithoutQuoteTradingPairsInput>, Prisma.AssetUncheckedUpdateWithoutQuoteTradingPairsInput>;
+};
 export type AssetCreateWithoutWalletsInput = {
     id?: string;
     symbol: string;
@@ -369,6 +407,8 @@ export type AssetCreateWithoutWalletsInput = {
     isActive?: boolean;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    baseTradingPairs?: Prisma.TradingPairCreateNestedManyWithoutBaseAssetInput;
+    quoteTradingPairs?: Prisma.TradingPairCreateNestedManyWithoutQuoteAssetInput;
 };
 export type AssetUncheckedCreateWithoutWalletsInput = {
     id?: string;
@@ -378,6 +418,8 @@ export type AssetUncheckedCreateWithoutWalletsInput = {
     isActive?: boolean;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    baseTradingPairs?: Prisma.TradingPairUncheckedCreateNestedManyWithoutBaseAssetInput;
+    quoteTradingPairs?: Prisma.TradingPairUncheckedCreateNestedManyWithoutQuoteAssetInput;
 };
 export type AssetCreateOrConnectWithoutWalletsInput = {
     where: Prisma.AssetWhereUniqueInput;
@@ -400,6 +442,8 @@ export type AssetUpdateWithoutWalletsInput = {
     isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    baseTradingPairs?: Prisma.TradingPairUpdateManyWithoutBaseAssetNestedInput;
+    quoteTradingPairs?: Prisma.TradingPairUpdateManyWithoutQuoteAssetNestedInput;
 };
 export type AssetUncheckedUpdateWithoutWalletsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -409,15 +453,135 @@ export type AssetUncheckedUpdateWithoutWalletsInput = {
     isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    baseTradingPairs?: Prisma.TradingPairUncheckedUpdateManyWithoutBaseAssetNestedInput;
+    quoteTradingPairs?: Prisma.TradingPairUncheckedUpdateManyWithoutQuoteAssetNestedInput;
+};
+export type AssetCreateWithoutBaseTradingPairsInput = {
+    id?: string;
+    symbol: string;
+    name: string;
+    decimals: number;
+    isActive?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    wallets?: Prisma.WalletCreateNestedManyWithoutAssetInput;
+    quoteTradingPairs?: Prisma.TradingPairCreateNestedManyWithoutQuoteAssetInput;
+};
+export type AssetUncheckedCreateWithoutBaseTradingPairsInput = {
+    id?: string;
+    symbol: string;
+    name: string;
+    decimals: number;
+    isActive?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    wallets?: Prisma.WalletUncheckedCreateNestedManyWithoutAssetInput;
+    quoteTradingPairs?: Prisma.TradingPairUncheckedCreateNestedManyWithoutQuoteAssetInput;
+};
+export type AssetCreateOrConnectWithoutBaseTradingPairsInput = {
+    where: Prisma.AssetWhereUniqueInput;
+    create: Prisma.XOR<Prisma.AssetCreateWithoutBaseTradingPairsInput, Prisma.AssetUncheckedCreateWithoutBaseTradingPairsInput>;
+};
+export type AssetCreateWithoutQuoteTradingPairsInput = {
+    id?: string;
+    symbol: string;
+    name: string;
+    decimals: number;
+    isActive?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    wallets?: Prisma.WalletCreateNestedManyWithoutAssetInput;
+    baseTradingPairs?: Prisma.TradingPairCreateNestedManyWithoutBaseAssetInput;
+};
+export type AssetUncheckedCreateWithoutQuoteTradingPairsInput = {
+    id?: string;
+    symbol: string;
+    name: string;
+    decimals: number;
+    isActive?: boolean;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    wallets?: Prisma.WalletUncheckedCreateNestedManyWithoutAssetInput;
+    baseTradingPairs?: Prisma.TradingPairUncheckedCreateNestedManyWithoutBaseAssetInput;
+};
+export type AssetCreateOrConnectWithoutQuoteTradingPairsInput = {
+    where: Prisma.AssetWhereUniqueInput;
+    create: Prisma.XOR<Prisma.AssetCreateWithoutQuoteTradingPairsInput, Prisma.AssetUncheckedCreateWithoutQuoteTradingPairsInput>;
+};
+export type AssetUpsertWithoutBaseTradingPairsInput = {
+    update: Prisma.XOR<Prisma.AssetUpdateWithoutBaseTradingPairsInput, Prisma.AssetUncheckedUpdateWithoutBaseTradingPairsInput>;
+    create: Prisma.XOR<Prisma.AssetCreateWithoutBaseTradingPairsInput, Prisma.AssetUncheckedCreateWithoutBaseTradingPairsInput>;
+    where?: Prisma.AssetWhereInput;
+};
+export type AssetUpdateToOneWithWhereWithoutBaseTradingPairsInput = {
+    where?: Prisma.AssetWhereInput;
+    data: Prisma.XOR<Prisma.AssetUpdateWithoutBaseTradingPairsInput, Prisma.AssetUncheckedUpdateWithoutBaseTradingPairsInput>;
+};
+export type AssetUpdateWithoutBaseTradingPairsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    symbol?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    decimals?: Prisma.IntFieldUpdateOperationsInput | number;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    wallets?: Prisma.WalletUpdateManyWithoutAssetNestedInput;
+    quoteTradingPairs?: Prisma.TradingPairUpdateManyWithoutQuoteAssetNestedInput;
+};
+export type AssetUncheckedUpdateWithoutBaseTradingPairsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    symbol?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    decimals?: Prisma.IntFieldUpdateOperationsInput | number;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    wallets?: Prisma.WalletUncheckedUpdateManyWithoutAssetNestedInput;
+    quoteTradingPairs?: Prisma.TradingPairUncheckedUpdateManyWithoutQuoteAssetNestedInput;
+};
+export type AssetUpsertWithoutQuoteTradingPairsInput = {
+    update: Prisma.XOR<Prisma.AssetUpdateWithoutQuoteTradingPairsInput, Prisma.AssetUncheckedUpdateWithoutQuoteTradingPairsInput>;
+    create: Prisma.XOR<Prisma.AssetCreateWithoutQuoteTradingPairsInput, Prisma.AssetUncheckedCreateWithoutQuoteTradingPairsInput>;
+    where?: Prisma.AssetWhereInput;
+};
+export type AssetUpdateToOneWithWhereWithoutQuoteTradingPairsInput = {
+    where?: Prisma.AssetWhereInput;
+    data: Prisma.XOR<Prisma.AssetUpdateWithoutQuoteTradingPairsInput, Prisma.AssetUncheckedUpdateWithoutQuoteTradingPairsInput>;
+};
+export type AssetUpdateWithoutQuoteTradingPairsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    symbol?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    decimals?: Prisma.IntFieldUpdateOperationsInput | number;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    wallets?: Prisma.WalletUpdateManyWithoutAssetNestedInput;
+    baseTradingPairs?: Prisma.TradingPairUpdateManyWithoutBaseAssetNestedInput;
+};
+export type AssetUncheckedUpdateWithoutQuoteTradingPairsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    symbol?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    decimals?: Prisma.IntFieldUpdateOperationsInput | number;
+    isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    wallets?: Prisma.WalletUncheckedUpdateManyWithoutAssetNestedInput;
+    baseTradingPairs?: Prisma.TradingPairUncheckedUpdateManyWithoutBaseAssetNestedInput;
 };
 /**
  * Count Type AssetCountOutputType
  */
 export type AssetCountOutputType = {
     wallets: number;
+    baseTradingPairs: number;
+    quoteTradingPairs: number;
 };
 export type AssetCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     wallets?: boolean | AssetCountOutputTypeCountWalletsArgs;
+    baseTradingPairs?: boolean | AssetCountOutputTypeCountBaseTradingPairsArgs;
+    quoteTradingPairs?: boolean | AssetCountOutputTypeCountQuoteTradingPairsArgs;
 };
 /**
  * AssetCountOutputType without action
@@ -434,6 +598,18 @@ export type AssetCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extens
 export type AssetCountOutputTypeCountWalletsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     where?: Prisma.WalletWhereInput;
 };
+/**
+ * AssetCountOutputType without action
+ */
+export type AssetCountOutputTypeCountBaseTradingPairsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.TradingPairWhereInput;
+};
+/**
+ * AssetCountOutputType without action
+ */
+export type AssetCountOutputTypeCountQuoteTradingPairsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.TradingPairWhereInput;
+};
 export type AssetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     symbol?: boolean;
@@ -443,6 +619,8 @@ export type AssetSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     createdAt?: boolean;
     updatedAt?: boolean;
     wallets?: boolean | Prisma.Asset$walletsArgs<ExtArgs>;
+    baseTradingPairs?: boolean | Prisma.Asset$baseTradingPairsArgs<ExtArgs>;
+    quoteTradingPairs?: boolean | Prisma.Asset$quoteTradingPairsArgs<ExtArgs>;
     _count?: boolean | Prisma.AssetCountOutputTypeDefaultArgs<ExtArgs>;
 }, ExtArgs["result"]["asset"]>;
 export type AssetSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -475,6 +653,8 @@ export type AssetSelectScalar = {
 export type AssetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "symbol" | "name" | "decimals" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["asset"]>;
 export type AssetInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     wallets?: boolean | Prisma.Asset$walletsArgs<ExtArgs>;
+    baseTradingPairs?: boolean | Prisma.Asset$baseTradingPairsArgs<ExtArgs>;
+    quoteTradingPairs?: boolean | Prisma.Asset$quoteTradingPairsArgs<ExtArgs>;
     _count?: boolean | Prisma.AssetCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type AssetIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
@@ -483,6 +663,8 @@ export type $AssetPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     name: "Asset";
     objects: {
         wallets: Prisma.$WalletPayload<ExtArgs>[];
+        baseTradingPairs: Prisma.$TradingPairPayload<ExtArgs>[];
+        quoteTradingPairs: Prisma.$TradingPairPayload<ExtArgs>[];
     };
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: string;
@@ -822,6 +1004,8 @@ export interface AssetDelegate<ExtArgs extends runtime.Types.Extensions.Internal
 export interface Prisma__AssetClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise";
     wallets<T extends Prisma.Asset$walletsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Asset$walletsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    baseTradingPairs<T extends Prisma.Asset$baseTradingPairsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Asset$baseTradingPairsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TradingPairPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    quoteTradingPairs<T extends Prisma.Asset$quoteTradingPairsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Asset$quoteTradingPairsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TradingPairPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1251,6 +1435,52 @@ export type Asset$walletsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
     take?: number;
     skip?: number;
     distinct?: Prisma.WalletScalarFieldEnum | Prisma.WalletScalarFieldEnum[];
+};
+/**
+ * Asset.baseTradingPairs
+ */
+export type Asset$baseTradingPairsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TradingPair
+     */
+    select?: Prisma.TradingPairSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TradingPair
+     */
+    omit?: Prisma.TradingPairOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TradingPairInclude<ExtArgs> | null;
+    where?: Prisma.TradingPairWhereInput;
+    orderBy?: Prisma.TradingPairOrderByWithRelationInput | Prisma.TradingPairOrderByWithRelationInput[];
+    cursor?: Prisma.TradingPairWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.TradingPairScalarFieldEnum | Prisma.TradingPairScalarFieldEnum[];
+};
+/**
+ * Asset.quoteTradingPairs
+ */
+export type Asset$quoteTradingPairsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TradingPair
+     */
+    select?: Prisma.TradingPairSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the TradingPair
+     */
+    omit?: Prisma.TradingPairOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.TradingPairInclude<ExtArgs> | null;
+    where?: Prisma.TradingPairWhereInput;
+    orderBy?: Prisma.TradingPairOrderByWithRelationInput | Prisma.TradingPairOrderByWithRelationInput[];
+    cursor?: Prisma.TradingPairWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.TradingPairScalarFieldEnum | Prisma.TradingPairScalarFieldEnum[];
 };
 /**
  * Asset without action

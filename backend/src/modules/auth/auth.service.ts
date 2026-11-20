@@ -9,7 +9,7 @@ import {
 
 
 // import { generateRefreshToken  } from './token.service.js';
-import { createRefreshSession, findRefreshSession, rotateRefreshSession } from './session.repository.js';
+import { createRefreshSession, findRefreshSession, revokeRefreshSession, rotateRefreshSession } from './session.repository.js';
 
 
 import type { RegisterInput } from './auth.types.js';
@@ -124,6 +124,22 @@ export const loginUser = async(data: LoginInput) => {
             email: user.email,
         },
     };
+};
+
+export const logoutUser = async (refreshToken: unknown) => {
+    if(typeof refreshToken !== "string" || !refreshToken.trim()) {
+        return;
+    }
+
+    const tokenHash = hashRefreshToken(refreshToken);
+
+    const session = await findRefreshSession(tokenHash);
+
+    if(!session || session.revokedAt !== null) {
+        return;
+    }
+    await revokeRefreshSession(session.id);
+    
 };
 
 

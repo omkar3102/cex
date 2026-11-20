@@ -72,7 +72,8 @@ export const ModelName = {
     Asset: 'Asset',
     Wallet: 'Wallet',
     LedgerEntry: 'LedgerEntry',
-    RefreshSession: 'RefreshSession'
+    RefreshSession: 'RefreshSession',
+    TradingPair: 'TradingPair'
 };
 /**
  * Enums
@@ -127,6 +128,17 @@ export const RefreshSessionScalarFieldEnum = {
     expiresAt: 'expiresAt',
     revokedAt: 'revokedAt',
     createdAt: 'createdAt'
+};
+export const TradingPairScalarFieldEnum = {
+    id: 'id',
+    symbol: 'symbol',
+    baseAssetId: 'baseAssetId',
+    quoteAssetId: 'quoteAssetId',
+    priceDecimals: 'priceDecimals',
+    quantityDecimal: 'quantityDecimal',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
 };
 export const SortOrder = {
     asc: 'asc',

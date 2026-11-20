@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { generateRefreshToken, hashRefreshToken } from './token.service.js';
 import { findUserByEmail, createUserWithWallets, } from './auth.repository.js';
 // import { generateRefreshToken  } from './token.service.js';
-import { createRefreshSession, findRefreshSession, rotateRefreshSession } from './session.repository.js';
+import { createRefreshSession, findRefreshSession, revokeRefreshSession, rotateRefreshSession } from './session.repository.js';
 export class AuthError extends Error {
     statusCode;
     constructor(message, statusCode) {
@@ -85,6 +85,17 @@ export const loginUser = async (data) => {
             email: user.email,
         },
     };
+};
+export const logoutUser = async (refreshToken) => {
+    if (typeof refreshToken !== "string" || !refreshToken.trim()) {
+        return;
+    }
+    const tokenHash = hashRefreshToken(refreshToken);
+    const session = await findRefreshSession(tokenHash);
+    if (!session || session.revokedAt !== null) {
+        return;
+    }
+    await revokeRefreshSession(session.id);
 };
 export const refreshUserSession = async (refreshToken) => {
     //1. Validate the incoming refresh token
