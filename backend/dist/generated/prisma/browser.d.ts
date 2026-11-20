@@ -22,4 +22,14 @@ export type Wallet = Prisma.WalletModel;
  *
  */
 export type LedgerEntry = Prisma.LedgerEntryModel;
+/**
+ * Model RefreshSession
+ *
+ */
+export type RefreshSession = Prisma.RefreshSessionModel;
+/**
+ * Model TradingPair
+ *
+ */
+export type TradingPair = Prisma.TradingPairModel;
 //# sourceMappingURL=browser.d.ts.map

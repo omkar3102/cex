@@ -161,6 +161,28 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
     get ledgerEntry(): Prisma.LedgerEntryDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
+    /**
+     * `prisma.refreshSession`: Exposes CRUD operations for the **RefreshSession** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more RefreshSessions
+      * const refreshSessions = await prisma.refreshSession.findMany()
+      * ```
+      */
+    get refreshSession(): Prisma.RefreshSessionDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    /**
+     * `prisma.tradingPair`: Exposes CRUD operations for the **TradingPair** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more TradingPairs
+      * const tradingPairs = await prisma.tradingPair.findMany()
+      * ```
+      */
+    get tradingPair(): Prisma.TradingPairDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
 }
 export declare function getPrismaClientClass(): PrismaClientConstructor;
 //# sourceMappingURL=class.d.ts.map

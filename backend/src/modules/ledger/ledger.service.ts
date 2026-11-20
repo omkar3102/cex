@@ -4,7 +4,7 @@ import { findActiveAssetBySymbol } from "../assets/asset.repository.js";
 
 
 import {
-    creditWallet
+    creditWallet, getLedgerHistory, debitWallet
 } from "./ledger.repository.js";
 
 //ledger specific application error
@@ -184,4 +184,175 @@ const normalizeAmount = (
         throw error;
         }
 
+    }
+
+    export const getUserLedgerHistory = async (
+        userId: string,
+        limitInput: unknown,
+        cursorInput: unknown,
+    ) => {
+        //1. Validate authenticated user
+        if(!userId) {
+            throw new LedgerError("Authentication required", 401);
+        }
+
+        //2. Validate limit
+        let limit = 20;
+
+        if(limitInput !== undefined) {
+            if (typeof limitInput !== "string" || !/^\d+$/.test(limitInput)){
+                throw new LedgerError("Invalid limit", 400);
+            }
+
+            limit = Number(limitInput);
+
+            if(!Number.isSafeInteger(limit) || limit < 1 || limit > 100) {
+                throw new LedgerError(
+                    "Limit must be between 1 and 100", 400
+                )
+            }
+        }
+
+        //3. Validate cursor
+        let cursor: string | undefined;
+
+        if(cursorInput !== undefined) {
+            if(typeof cursorInput !== "string" ||
+                !cursorInput.trim()
+            ) {
+                throw new LedgerError("Invalid cursor", 400);
+            }
+
+            cursor = cursorInput.trim()
+        }
+
+        //4. Fetch ledger entries
+        const entries = await getLedgerHistory(
+            userId,
+            limit,
+            cursor
+        );
+
+        //5. Determine whether another page exists
+        const hasMore = entries.length > limit;
+        
+        const transactions = entries.slice(0, limit);
+
+        //6. Determine next cursor
+        const nextCursor = hasMore ? transactions[transactions.length - 1]?.id : null
+
+        //7 Format response 
+        return {
+            transactions: transactions.map((entry) => ({
+                id: entry.id,
+                asset: entry.wallet.asset.symbol,
+                type: entry.type,
+                availableDelta: entry.availableDelta.toString(),
+                lockedDelta: entry.lockedDelta.toString(),
+                referenceType: entry.referenceType,
+                referenceId: entry.referenceId,
+                createdAt: entry.createdAt
+            })),
+            nextCursor,
+        };
+        
+    };
+
+    export const withdrawFromWallet = async (
+        userId: string,
+        assetSymbol: unknown,
+        amount: unknown,
+        idempotencyKey: unknown
+    ) => {
+        //1. Validate authenticated user
+        if(!userId) {
+            throw new LedgerError("Authentication required", 401);
+        }
+
+        //2. Normalize asset symbol
+        if(typeof assetSymbol !== "string" ||
+            !assetSymbol.trim()
+        ) {
+            throw new LedgerError("Asset symbol is required", 400);
+
+        }
+
+        const normalizedSymbol = assetSymbol.trim().toUpperCase();
+
+        //3. Validate idempotency key
+        if(
+            typeof idempotencyKey !== "string" ||
+            !/^[\x21-\x7E]{1,128}$/.test(idempotencyKey.trim())
+        ) {
+            throw new LedgerError("A valid Idempotency-Key header is required", 400);
+        }
+
+        const normalizedKey = idempotencyKey.trim();
+
+        //4. Find active asset
+        const asset = await findActiveAssetBySymbol(normalizedSymbol);
+
+        if(!asset) {
+            throw new LedgerError("Asset not found or inactive", 404);
+        }
+
+        //5. Normalize amount using asset precision 
+        const normalizedAmount = normalizeAmount(
+            amount,
+            asset.decimals
+        );
+
+        //6. Execute withdrawal
+        try {
+            const result = await debitWallet(
+                userId,
+                normalizedSymbol,
+                normalizedAmount,
+                normalizedKey
+            );
+
+            if(!result.wallet) {
+                throw new LedgerError("Wallet not found", 404);
+            }
+
+            //7. Return safe API response
+            return {
+                wallet: {
+                    id: result.wallet.id,
+                    assetSymbol: normalizedSymbol,
+                    availableBalance: 
+                       result.wallet.availableBalance.toString()
+                },
+
+                ledgerEntry: {
+                    id: result.ledgerEntry.id,
+                    type: result.ledgerEntry.type,
+                    availableDelta: result.ledgerEntry.availableDelta.toString()
+                },
+
+                alreadyProcessed: result.alreadyProcessed
+            } 
+        } catch(error) {
+            if (
+                error instanceof Error &&
+                error.message === "WALLET_NOT_FOUND"
+            ) {
+                throw new LedgerError("Wallet not found", 404)
+            }
+
+            if(error instanceof Error && 
+                error.message === "INSUFFICIENT_AVAILABLE_BALANCE"
+            ) {
+                throw new LedgerError("Insufficient available balance", 400)
+            }
+
+            if(
+                error instanceof Error &&
+                error.message === "IDEMPOTENCY_KEY_REUSED"
+            ) {
+                throw new LedgerError("Idempotency key has already been used for a different operation", 409)
+            }
+            throw error;
+        }
+        
     }

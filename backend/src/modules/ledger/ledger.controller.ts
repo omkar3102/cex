@@ -3,8 +3,8 @@ import type {Response} from "express";
 import type { AuthenticatedRequest } from "../../middleware/auth.middleware.js";
 
 import {
-    depositToWallet,
-    LedgerError
+    depositToWallet, getUserLedgerHistory,
+    LedgerError, withdrawFromWallet
 } from "./ledger.service.js";
 
 export const deposit = async (
@@ -52,3 +52,73 @@ export const deposit = async (
         });
     }
     }
+
+export const getLedgerHistory = async (
+    req: AuthenticatedRequest,
+    res: Response
+) => {
+    try {
+        const userId = req.userId!;
+
+        const result = await getUserLedgerHistory(
+            userId,
+            req.query.limit,
+            req.query.cursor
+        );
+    
+        return res.status(200).json({
+            success: true,
+            data: result
+        });
+    } catch(error) {
+        if(error instanceof LedgerError) {
+            return res.status(error.statusCode).json({
+                success: false,
+                message: error.message,
+            });
+        }
+        
+        console.error("Ledger history error", error);
+    }
+}
+
+export const withdraw = async (
+    req: AuthenticatedRequest,
+    res: Response
+)  => {
+    try {
+        const userId = req.userId!
+
+        const {assetSymbol, amount } = req.body;
+
+        const idempotencyKey = req.headers["idempotency-key"];
+
+
+        const result = await withdrawFromWallet(
+            userId,
+            assetSymbol,
+            amount,
+            idempotencyKey
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Withdrawal successful",
+            data: result
+        });
+    } catch (error) {
+        if(error instanceof Error) {
+            return res.status(404).json({
+                success: false,
+                message: error.message
+            });
+        }
+
+        console.error("Withdrawal controller error: ", error)
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        })
+    }
+}

@@ -412,3 +412,174 @@ export const unlockFunds = async (
     throw error;
 }
 }
+
+export const getLedgerHistory = async (
+    userId: string,
+    limit: number,
+    cursor?: string
+) => {
+    return prisma.ledgerEntry.findMany({
+        where: {
+            wallet: {
+                userId,
+            },
+        },
+        take: limit + 1,
+        ...(cursor && {
+            skip: 1,
+            cursor: {
+                id: cursor
+            },
+        }),
+        orderBy: {
+            createdAt: "desc",
+        },
+        include: {
+            wallet: {
+                include: {
+                    asset: true,
+                },
+            },
+        },
+    });
+}
+
+export const debitWallet = async (
+    userId: string,
+    assetSymbol: string,
+    amount: string,
+    idempotencyKey: string
+) => {
+    try {
+        return await prisma.$transaction(async (tx) => {
+
+            //1. Check existing idempotency key
+            const existingEntry = await tx.ledgerEntry.findUnique({
+                where: {idempotencyKey}
+            });
+
+            if(existingEntry) {
+                const wallet = await tx.wallet.findUnique({
+                    where: {id: existingEntry.walletId },
+                    include: { asset: true }
+                });
+
+                if(
+                    existingEntry.type !== "WITHDRAWAL" ||
+                    existingEntry.availableDelta.toString() !== `-${amount}` ||
+                    existingEntry.lockedDelta.toString() !== "0" ||
+                    wallet?.userId !== userId ||
+                    wallet?.asset.symbol !== assetSymbol
+                ) {
+                    throw new Error("IDEMPOTENCY_KEY_REUSED");
+                }
+
+                return {
+                    wallet,
+                    ledgerEntry: existingEntry,
+                    alreadyProcessed: true
+                };
+            }
+
+            console.log("Withdrawal userId:", userId);
+            console.log("Withdrawal assetSymbol:", assetSymbol);
+
+            //2. Find user's active asset wallet
+            const wallet = await tx.wallet.findFirst({
+                where: {
+                    userId,
+                    asset: {
+                        is: {
+                            symbol: assetSymbol,
+                            isActive: true
+                        }
+                    }
+                }
+            });
+
+            if(!wallet) {
+                throw new Error("WALLET_NOT_FOUND")
+            }
+
+            //3. Conditionally deduct available funds
+            const result = await tx.wallet.updateMany({
+                where: {
+                    id: wallet.id,
+                    availableBalance: {
+                        gte: amount
+                    }
+                },
+                data: {
+                    availableBalance: {
+                        decrement: amount
+                    }
+                }
+            });
+
+            if(result.count === 0) {
+                throw new Error("INSUFFICIENT_AVAILABLE_BALANCE");
+            }
+
+            //4. Create withdrawal ledger entry
+            const ledgerEntry = await tx.ledgerEntry.create({
+                data: {
+                    walletId: wallet.id,
+                    type: "WITHDRAWAL",
+                    availableDelta: `-${amount}`,
+                    lockedDelta: "0",
+                    referenceType: "WITHDRAWAL",
+                    referenceId: idempotencyKey,
+                    idempotencyKey
+                }
+            });
+
+            //5. Fetch updated wallet
+            const updatedWallet = await tx.wallet.findUnique({
+                where: {id: wallet.id }
+            });
+
+            return {
+                wallet: updatedWallet,
+                ledgerEntry,
+                alreadyProcessed: false
+            };
+        })  
+    } catch (error) {
+        // Handle concurrent duplicate requests
+        if (
+            typeof error === "object" &&
+            error !== null &&
+            "code" in error &&
+            error.code === "P2002"
+        ) {
+            const existingEntry = await prisma.ledgerEntry.findUnique({
+                where: { idempotencyKey }
+            });
+
+            if (existingEntry) {
+                const wallet = await prisma.wallet.findUnique({
+                    where: { id: existingEntry.walletId },
+                    include: { asset: true }
+                });
+
+                if (
+                    existingEntry.type !== "WITHDRAWAL" ||
+                    existingEntry.availableDelta.toString() !== `-${amount}` ||
+                    existingEntry.lockedDelta.toString() !== "0" ||
+                    wallet?.userId !== userId ||
+                    wallet?.asset.symbol !== assetSymbol
+                ) {
+                    throw new Error("IDEMPOTENCY_KEY_REUSED");
+                }
+
+                return {
+                    wallet,
+                    ledgerEntry: existingEntry,
+                    alreadyProcessed: true
+                };
+            }
+        }
+
+        throw error;
+    }
+}

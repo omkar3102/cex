@@ -30,6 +30,8 @@ export declare const ModelName: {
     readonly Asset: 'Asset';
     readonly Wallet: 'Wallet';
     readonly LedgerEntry: 'LedgerEntry';
+    readonly RefreshSession: 'RefreshSession';
+    readonly TradingPair: 'TradingPair';
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
@@ -79,6 +81,28 @@ export declare const LedgerEntryScalarFieldEnum: {
     readonly createdAt: 'createdAt';
 };
 export type LedgerEntryScalarFieldEnum = (typeof LedgerEntryScalarFieldEnum)[keyof typeof LedgerEntryScalarFieldEnum];
+export declare const RefreshSessionScalarFieldEnum: {
+    readonly id: 'id';
+    readonly userId: 'userId';
+    readonly tokenHash: 'tokenHash';
+    readonly familyId: 'familyId';
+    readonly expiresAt: 'expiresAt';
+    readonly revokedAt: 'revokedAt';
+    readonly createdAt: 'createdAt';
+};
+export type RefreshSessionScalarFieldEnum = (typeof RefreshSessionScalarFieldEnum)[keyof typeof RefreshSessionScalarFieldEnum];
+export declare const TradingPairScalarFieldEnum: {
+    readonly id: 'id';
+    readonly symbol: 'symbol';
+    readonly baseAssetId: 'baseAssetId';
+    readonly quoteAssetId: 'quoteAssetId';
+    readonly priceDecimals: 'priceDecimals';
+    readonly quantityDecimal: 'quantityDecimal';
+    readonly isActive: 'isActive';
+    readonly createdAt: 'createdAt';
+    readonly updatedAt: 'updatedAt';
+};
+export type TradingPairScalarFieldEnum = (typeof TradingPairScalarFieldEnum)[keyof typeof TradingPairScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: 'asc';
     readonly desc: 'desc';

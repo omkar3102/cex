@@ -8,13 +8,15 @@ datasource db {
 }
 
 model User {
-    id        String    @id @default(uuid())
-    email     String    @unique
-    password  String
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
+    id               String    @id @default(uuid())
+    email            String    @unique
+    password         String
+    createdAt        DateTime  @default(now())
+    updatedAt        DateTime  @updatedAt
 
-    wallets   Wallet[]
+    wallets          Wallet[]
+    refreshSessions RefreshSession[]
+    orders          Order[]
 }
 
 model Asset {
@@ -25,6 +27,9 @@ model Asset {
   isActive  Boolean  @default(true)
 
   wallets   Wallet[]
+
+  baseTradingPairs   TradingPair[]  @relation("BaseAsset")
+  quoteTradingPairs  TradingPair[]  @relation("QuoteAsset")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -72,4 +77,77 @@ model LedgerEntry {
 
   @@index([walletId, createdAt])
   @@index([referenceType, referenceId])
+}
+
+model RefreshSession {
+  id         String      @id @default(uuid())
+  userId     String
+  tokenHash  String      @unique
+  familyId   String
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime    @default(now())
+
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([familyId])
+  @@index([expiresAt])
+
+}
+
+model TradingPair {
+  id             String         @id @default(uuid())
+
+
+  symbol         String         @unique
+
+
+  baseAssetId    String
+  quoteAssetId   String
+
+  priceDecimals    Int
+  quantityDecimal  Int
+
+  isActive       Boolean        @default(true)
+
+  baseAsset      Asset @relation("BaseAsset", fields: [baseAssetId], references: [id])
+
+  quoteAsset    Asset @relation("QuoteAsset", fields: [quoteAssetId], references: [id])
+
+  orders         Order[]
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@unique([baseAssetId, quoteAssetId])
+  @@index([baseAssetId])
+  @@index([quoteAssetId])
+
+}
+
+model Order {
+  id             String     @id @default(uuid())
+  
+  userId         String
+  tradingPairId  String
+
+  side           String
+  type           String
+  status         String
+
+  price          Decimal?  @db.Decimal(36, 18)
+  quantity       Decimal   @db.Decimal(36, 18)
+  filledQuantity Decimal   @default(0) @db.Decimal(36, 18)
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user           User        @relation(fields: [userId], references: [id])
+  tradingPair    TradingPair @relation(fields: [tradingPairId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([tradingPairId, status])
+  @@index([tradingPairId, side, status])
+
 }
