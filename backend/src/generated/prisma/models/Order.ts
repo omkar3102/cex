@@ -50,6 +50,7 @@ export type OrderMinAggregateOutputType = {
   filledQuantity: runtime.Decimal | null
   createdAt: Date | null
   updatedAt: Date | null
+  idempotencyKey: string | null
 }
 
 export type OrderMaxAggregateOutputType = {
@@ -64,6 +65,7 @@ export type OrderMaxAggregateOutputType = {
   filledQuantity: runtime.Decimal | null
   createdAt: Date | null
   updatedAt: Date | null
+  idempotencyKey: string | null
 }
 
 export type OrderCountAggregateOutputType = {
@@ -78,6 +80,7 @@ export type OrderCountAggregateOutputType = {
   filledQuantity: number
   createdAt: number
   updatedAt: number
+  idempotencyKey: number
   _all: number
 }
 
@@ -106,6 +109,7 @@ export type OrderMinAggregateInputType = {
   filledQuantity?: true
   createdAt?: true
   updatedAt?: true
+  idempotencyKey?: true
 }
 
 export type OrderMaxAggregateInputType = {
@@ -120,6 +124,7 @@ export type OrderMaxAggregateInputType = {
   filledQuantity?: true
   createdAt?: true
   updatedAt?: true
+  idempotencyKey?: true
 }
 
 export type OrderCountAggregateInputType = {
@@ -134,6 +139,7 @@ export type OrderCountAggregateInputType = {
   filledQuantity?: true
   createdAt?: true
   updatedAt?: true
+  idempotencyKey?: true
   _all?: true
 }
 
@@ -235,6 +241,7 @@ export type OrderGroupByOutputType = {
   filledQuantity: runtime.Decimal
   createdAt: Date
   updatedAt: Date
+  idempotencyKey: string | null
   _count: OrderCountAggregateOutputType | null
   _avg: OrderAvgAggregateOutputType | null
   _sum: OrderSumAggregateOutputType | null
@@ -272,6 +279,7 @@ export type OrderWhereInput = {
   filledQuantity?: Prisma.DecimalFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string
+  idempotencyKey?: Prisma.StringNullableFilter<"Order"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   tradingPair?: Prisma.XOR<Prisma.TradingPairScalarRelationFilter, Prisma.TradingPairWhereInput>
 }
@@ -288,12 +296,14 @@ export type OrderOrderByWithRelationInput = {
   filledQuantity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   tradingPair?: Prisma.TradingPairOrderByWithRelationInput
 }
 
 export type OrderWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  idempotencyKey?: string
   AND?: Prisma.OrderWhereInput | Prisma.OrderWhereInput[]
   OR?: Prisma.OrderWhereInput[]
   NOT?: Prisma.OrderWhereInput | Prisma.OrderWhereInput[]
@@ -309,7 +319,7 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   tradingPair?: Prisma.XOR<Prisma.TradingPairScalarRelationFilter, Prisma.TradingPairWhereInput>
-}, "id">
+}, "id" | "idempotencyKey">
 
 export type OrderOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -323,6 +333,7 @@ export type OrderOrderByWithAggregationInput = {
   filledQuantity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.OrderCountOrderByAggregateInput
   _avg?: Prisma.OrderAvgOrderByAggregateInput
   _max?: Prisma.OrderMaxOrderByAggregateInput
@@ -345,6 +356,7 @@ export type OrderScalarWhereWithAggregatesInput = {
   filledQuantity?: Prisma.DecimalWithAggregatesFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Order"> | Date | string
+  idempotencyKey?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
 }
 
 export type OrderCreateInput = {
@@ -357,6 +369,7 @@ export type OrderCreateInput = {
   filledQuantity?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  idempotencyKey?: string | null
   user: Prisma.UserCreateNestedOneWithoutOrdersInput
   tradingPair: Prisma.TradingPairCreateNestedOneWithoutOrdersInput
 }
@@ -373,6 +386,7 @@ export type OrderUncheckedCreateInput = {
   filledQuantity?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  idempotencyKey?: string | null
 }
 
 export type OrderUpdateInput = {
@@ -385,6 +399,7 @@ export type OrderUpdateInput = {
   filledQuantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutOrdersNestedInput
   tradingPair?: Prisma.TradingPairUpdateOneRequiredWithoutOrdersNestedInput
 }
@@ -401,6 +416,7 @@ export type OrderUncheckedUpdateInput = {
   filledQuantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type OrderCreateManyInput = {
@@ -415,6 +431,7 @@ export type OrderCreateManyInput = {
   filledQuantity?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  idempotencyKey?: string | null
 }
 
 export type OrderUpdateManyMutationInput = {
@@ -427,6 +444,7 @@ export type OrderUpdateManyMutationInput = {
   filledQuantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type OrderUncheckedUpdateManyInput = {
@@ -441,6 +459,7 @@ export type OrderUncheckedUpdateManyInput = {
   filledQuantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type OrderListRelationFilter = {
@@ -465,6 +484,7 @@ export type OrderCountOrderByAggregateInput = {
   filledQuantity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrder
 }
 
 export type OrderAvgOrderByAggregateInput = {
@@ -485,6 +505,7 @@ export type OrderMaxOrderByAggregateInput = {
   filledQuantity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrder
 }
 
 export type OrderMinOrderByAggregateInput = {
@@ -499,6 +520,7 @@ export type OrderMinOrderByAggregateInput = {
   filledQuantity?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrder
 }
 
 export type OrderSumOrderByAggregateInput = {
@@ -609,6 +631,7 @@ export type OrderCreateWithoutUserInput = {
   filledQuantity?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  idempotencyKey?: string | null
   tradingPair: Prisma.TradingPairCreateNestedOneWithoutOrdersInput
 }
 
@@ -623,6 +646,7 @@ export type OrderUncheckedCreateWithoutUserInput = {
   filledQuantity?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  idempotencyKey?: string | null
 }
 
 export type OrderCreateOrConnectWithoutUserInput = {
@@ -666,6 +690,7 @@ export type OrderScalarWhereInput = {
   filledQuantity?: Prisma.DecimalFilter<"Order"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFilter<"Order"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Order"> | Date | string
+  idempotencyKey?: Prisma.StringNullableFilter<"Order"> | string | null
 }
 
 export type OrderCreateWithoutTradingPairInput = {
@@ -678,6 +703,7 @@ export type OrderCreateWithoutTradingPairInput = {
   filledQuantity?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  idempotencyKey?: string | null
   user: Prisma.UserCreateNestedOneWithoutOrdersInput
 }
 
@@ -692,6 +718,7 @@ export type OrderUncheckedCreateWithoutTradingPairInput = {
   filledQuantity?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  idempotencyKey?: string | null
 }
 
 export type OrderCreateOrConnectWithoutTradingPairInput = {
@@ -731,6 +758,7 @@ export type OrderCreateManyUserInput = {
   filledQuantity?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  idempotencyKey?: string | null
 }
 
 export type OrderUpdateWithoutUserInput = {
@@ -743,6 +771,7 @@ export type OrderUpdateWithoutUserInput = {
   filledQuantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tradingPair?: Prisma.TradingPairUpdateOneRequiredWithoutOrdersNestedInput
 }
 
@@ -757,6 +786,7 @@ export type OrderUncheckedUpdateWithoutUserInput = {
   filledQuantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type OrderUncheckedUpdateManyWithoutUserInput = {
@@ -770,6 +800,7 @@ export type OrderUncheckedUpdateManyWithoutUserInput = {
   filledQuantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type OrderCreateManyTradingPairInput = {
@@ -783,6 +814,7 @@ export type OrderCreateManyTradingPairInput = {
   filledQuantity?: runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  idempotencyKey?: string | null
 }
 
 export type OrderUpdateWithoutTradingPairInput = {
@@ -795,6 +827,7 @@ export type OrderUpdateWithoutTradingPairInput = {
   filledQuantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutOrdersNestedInput
 }
 
@@ -809,6 +842,7 @@ export type OrderUncheckedUpdateWithoutTradingPairInput = {
   filledQuantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type OrderUncheckedUpdateManyWithoutTradingPairInput = {
@@ -822,6 +856,7 @@ export type OrderUncheckedUpdateManyWithoutTradingPairInput = {
   filledQuantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -838,6 +873,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   filledQuantity?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  idempotencyKey?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   tradingPair?: boolean | Prisma.TradingPairDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
@@ -854,6 +890,7 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   filledQuantity?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  idempotencyKey?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   tradingPair?: boolean | Prisma.TradingPairDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
@@ -870,6 +907,7 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   filledQuantity?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  idempotencyKey?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   tradingPair?: boolean | Prisma.TradingPairDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
@@ -886,9 +924,10 @@ export type OrderSelectScalar = {
   filledQuantity?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  idempotencyKey?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "tradingPairId" | "side" | "type" | "status" | "price" | "quantity" | "filledQuantity" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "tradingPairId" | "side" | "type" | "status" | "price" | "quantity" | "filledQuantity" | "createdAt" | "updatedAt" | "idempotencyKey", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   tradingPair?: boolean | Prisma.TradingPairDefaultArgs<ExtArgs>
@@ -920,6 +959,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     filledQuantity: runtime.Decimal
     createdAt: Date
     updatedAt: Date
+    idempotencyKey: string | null
   }, ExtArgs["result"]["order"]>
   composites: {}
 }
@@ -1356,6 +1396,7 @@ export interface OrderFieldRefs {
   readonly filledQuantity: Prisma.FieldRef<"Order", 'Decimal'>
   readonly createdAt: Prisma.FieldRef<"Order", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Order", 'DateTime'>
+  readonly idempotencyKey: Prisma.FieldRef<"Order", 'String'>
 }
     
 

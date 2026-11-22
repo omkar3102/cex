@@ -146,6 +146,8 @@ model Order {
   user           User        @relation(fields: [userId], references: [id])
   tradingPair    TradingPair @relation(fields: [tradingPairId], references: [id])
 
+  idempotencyKey String? @unique
+
   @@index([userId, createdAt])
   @@index([tradingPairId, status])
   @@index([tradingPairId, side, status])
