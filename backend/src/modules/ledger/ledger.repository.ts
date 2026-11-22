@@ -2,6 +2,7 @@
 //balance is updated simultaneously with the ledger entry
 //use decimal
 import { prisma } from "../../db/prisma.js";
+import { Prisma } from "../../generated/prisma/client.js";
 
 export const creditWallet = async (
     userId: string,
@@ -132,10 +133,12 @@ export const creditWallet = async (
 }
 
 export const lockFunds = async (
+    tx: Prisma.TransactionClient,
     userId: string,
     assetSymbol: string,
     amount: string,
     idempotencyKey: string,
+    orderId: string
 ) => {
     try {
 
@@ -144,7 +147,7 @@ export const lockFunds = async (
             const existingEntry = await tx.ledgerEntry.findUnique({
                 where: {
                     idempotencyKey
-                }
+                },
             });
     
             if (existingEntry) {
@@ -219,7 +222,9 @@ export const lockFunds = async (
                     type: "LOCK",
                     availableDelta: `-${amount}`,
                     lockedDelta: amount,
-                    referenceType: "ORDER"
+                    referenceType: "ORDER",
+                    referenceId: orderId,
+                    idempotencyKey,
                 },
             });
     
@@ -228,9 +233,21 @@ export const lockFunds = async (
                 where: {
                     id: wallet.id,
                 },
+                include: {
+                    asset: true
+                },
             });
-    
-            return updatedWallet;
+
+            if(!updatedWallet) {
+                throw new Error("WALLET_NOT_FOUND");
+            }
+
+            //7. Return consistent response
+            return {
+                wallet: updatedWallet,
+                ledgerEntry,
+                alreadyProcessed: false,
+            }
         })
     } catch(error) {
         if (
@@ -271,147 +288,273 @@ export const lockFunds = async (
 }
 }
 
+// export const unlockFunds = async (
+//     tx: Prisma.TransactionClient,
+//     userId: string,
+//     assetSymbol: string,
+//     amount: string,
+//     idempotencyKey: string,
+//     orderId: string,
+// ) => {
+//     try {
+
+//         // return await prisma.$transaction(async (tx) => {
+    
+//             const existingEntry = await tx.ledgerEntry.findUnique({
+//                 where: {
+//                     idempotencyKey
+//                 }
+//             });
+    
+//             if(existingEntry) {
+//                 const wallet = await tx.wallet.findUnique({
+//                         where: {id: existingEntry.walletId },
+//                         include: { asset: true
+//                         },
+//                 });
+            
+//                 if (
+//                     existingEntry.type !== "UNLOCK" ||
+//                     existingEntry.availableDelta.toString() !== amount ||
+//                     existingEntry.lockedDelta.toString() !== `-${amount}` ||
+//                     wallet?.userId !== userId || wallet?.asset.symbol !== assetSymbol
+//                 ) {
+//                     throw new Error("IDEMPOTENCY_KEY_REUSED")
+//                 }
+//                 return {
+//                         wallet,
+//                         ledgerEntry: existingEntry,
+//                         alreadyProcessed: true,
+//                     }
+//             }
+    
+    
+//             //1 Find the user's wallet
+//             const wallet = await tx.wallet.findFirst({
+//                 where: {
+//                     userId,
+//                     asset: {
+//                         is: {
+//                             symbol: assetSymbol,
+//                             isActive: true
+//                         },
+//                     },
+//                 },
+//             });
+    
+//             if(!wallet) {
+//                 throw new Error("WALLET_NOT_FOUND");
+//             }
+    
+//             //2. Conditionally move locked funds to available
+//             const result = await tx.wallet.updateMany({
+//                 where: {
+//                     id: wallet.id,
+//                     lockedBalance: {
+//                         gte: amount
+//                     },
+//                 },
+    
+//                 data: {
+//                     availableBalance: {
+//                         increment: amount
+//                     },
+//                     lockedBalance: {
+//                         decrement: amount
+//                     }
+//                 }
+//             });
+    
+//             //3. Ensure sufficient locked balance
+//             if(result.count === 0) {
+//                 throw new Error("INSUFFICIENT_LOCKED_BALANCE");
+//             }
+    
+//             const ledgerEntry = await tx.ledgerEntry.create({
+//                 data: {
+//                     walletId: wallet.id,
+//                     type: "UNLOCK",
+//                     availableDelta: amount,
+//                     lockedDelta: `-${amount}`,
+//                     referenceType: "ORDER",
+//                     idempotencyKey
+//                 }
+//             })
+    
+//             //5. Fetch the updated wallet
+//             const updatedWallet = await tx.wallet.findUnique({
+//                 where: {
+//                     id: wallet.id,
+//                 },
+//             });
+    
+//             return {
+//                 wallet: updatedWallet,
+//                 ledgerEntry,
+//                 alreadyProcessed: false
+//             }
+//         // }
+//     )
+//     } catch (error) {
+//     if (
+//         typeof error === "object" &&
+//         error !== null &&
+//         "code" in error &&
+//         error.code === "P2002"
+//     ) {
+//         const existingEntry = await prisma.ledgerEntry.findUnique({
+//             where: { idempotencyKey },
+//         });
+
+//         if (existingEntry) {
+//             const wallet = await prisma.wallet.findUnique({
+//                 where: { id: existingEntry.walletId },
+//                 include: { asset: true },
+//             });
+
+//             if (
+//                 existingEntry.type !== "UNLOCK" ||
+//                 existingEntry.availableDelta.toString() !== amount ||
+//                 existingEntry.lockedDelta.toString() !== `-${amount}` ||
+//                 wallet?.userId !== userId ||
+//                 wallet?.asset.symbol !== assetSymbol
+//             ) {
+//                 throw new Error("IDEMPOTENCY_KEY_REUSED");
+//             }
+
+//             return {
+//                 wallet,
+//                 ledgerEntry: existingEntry,
+//                 alreadyProcessed: true,
+//             };
+//         }
+//     }
+
+//     throw error;
+// }
+// }
+
+
 export const unlockFunds = async (
+    tx: Prisma.TransactionClient,
     userId: string,
     assetSymbol: string,
     amount: string,
-    idempotencyKey: string
+    idempotencyKey: string,
+    orderId: string,
 ) => {
-    try {
+    // 1. Check whether this unlock was already processed
+    const existingEntry = await tx.ledgerEntry.findUnique({
+        where: {
+            idempotencyKey,
+        },
+    });
 
-        return await prisma.$transaction(async (tx) => {
-    
-            const existingEntry = await tx.ledgerEntry.findUnique({
-                where: {
-                    idempotencyKey
-                }
-            });
-    
-            if(existingEntry) {
-                const wallet = await tx.wallet.findUnique({
-                        where: {id: existingEntry.walletId },
-                        include: { asset: true}
-                });
-            
-                if (
-                    existingEntry.type !== "UNLOCK" ||
-                    existingEntry.availableDelta.toString() !== amount ||
-                    existingEntry.lockedDelta.toString() !== `-${amount}` ||
-                    wallet?.userId !== userId || wallet?.asset.symbol !== assetSymbol
-                ) {
-                    throw new Error("IDEMPOTENCY_KEY_REUSED")
-                }
-                return {
-                        wallet,
-                        ledgerEntry: existingEntry,
-                        alreadyProcessed: true,
-                    }
-            }
-    
-    
-            //1 Find the user's wallet
-            const wallet = await tx.wallet.findFirst({
-                where: {
-                    userId,
-                    asset: {
-                        is: {
-                            symbol: assetSymbol,
-                            isActive: true
-                        },
-                    },
-                },
-            });
-    
-            if(!wallet) {
-                throw new Error("WALLET_NOT_FOUND");
-            }
-    
-            //2. Conditionally move locked funds to available
-            const result = await tx.wallet.updateMany({
-                where: {
-                    id: wallet.id,
-                    lockedBalance: {
-                        gte: amount
-                    },
-                },
-    
-                data: {
-                    availableBalance: {
-                        increment: amount
-                    },
-                    lockedBalance: {
-                        decrement: amount
-                    }
-                }
-            });
-    
-            //3. Ensure sufficient locked balance
-            if(result.count === 0) {
-                throw new Error("INSUFFICIENT_LOCKED_BALANCE");
-            }
-    
-            const ledgerEntry = await tx.ledgerEntry.create({
-                data: {
-                    walletId: wallet.id,
-                    type: "UNLOCK",
-                    availableDelta: amount,
-                    lockedDelta: `-${amount}`,
-                    referenceType: "ORDER",
-                    idempotencyKey
-                }
-            })
-    
-            //5. Fetch the updated wallet
-            const updatedWallet = await tx.wallet.findUnique({
-                where: {
-                    id: wallet.id,
-                },
-            });
-    
-            return {
-                wallet: updatedWallet,
-                ledgerEntry,
-                alreadyProcessed: false
-            }
-        })
-    } catch (error) {
-    if (
-        typeof error === "object" &&
-        error !== null &&
-        "code" in error &&
-        error.code === "P2002"
-    ) {
-        const existingEntry = await prisma.ledgerEntry.findUnique({
-            where: { idempotencyKey },
+    if (existingEntry) {
+        const wallet = await tx.wallet.findUnique({
+            where: {
+                id: existingEntry.walletId,
+            },
+            include: {
+                asset: true,
+            },
         });
 
-        if (existingEntry) {
-            const wallet = await prisma.wallet.findUnique({
-                where: { id: existingEntry.walletId },
-                include: { asset: true },
-            });
+        const isSameOperation =
+            existingEntry.type === "UNLOCK" &&
+            existingEntry.availableDelta.eq(amount) &&
+            existingEntry.lockedDelta.eq(
+                new Prisma.Decimal(amount).negated()
+            ) &&
+            existingEntry.referenceType === "ORDER" &&
+            existingEntry.referenceId === orderId &&
+            wallet?.userId === userId &&
+            wallet?.asset.symbol === assetSymbol;
 
-            if (
-                existingEntry.type !== "UNLOCK" ||
-                existingEntry.availableDelta.toString() !== amount ||
-                existingEntry.lockedDelta.toString() !== `-${amount}` ||
-                wallet?.userId !== userId ||
-                wallet?.asset.symbol !== assetSymbol
-            ) {
-                throw new Error("IDEMPOTENCY_KEY_REUSED");
-            }
-
-            return {
-                wallet,
-                ledgerEntry: existingEntry,
-                alreadyProcessed: true,
-            };
+        if (!isSameOperation) {
+            throw new Error("IDEMPOTENCY_KEY_REUSED");
         }
+
+        return {
+            wallet,
+            ledgerEntry: existingEntry,
+            alreadyProcessed: true,
+        };
     }
 
-    throw error;
-}
-}
+    // 2. Find the user's wallet
+    const wallet = await tx.wallet.findFirst({
+        where: {
+            userId,
+            asset: {
+                is: {
+                    symbol: assetSymbol,
+                    isActive: true,
+                },
+            },
+        },
+    });
+
+    if (!wallet) {
+        throw new Error("WALLET_NOT_FOUND");
+    }
+
+    // 3. Move locked funds back to available balance
+    const result = await tx.wallet.updateMany({
+        where: {
+            id: wallet.id,
+            lockedBalance: {
+                gte: amount,
+            },
+        },
+        data: {
+            availableBalance: {
+                increment: amount,
+            },
+            lockedBalance: {
+                decrement: amount,
+            },
+        },
+    });
+
+    if (result.count === 0) {
+        throw new Error("INSUFFICIENT_LOCKED_BALANCE");
+    }
+
+    // 4. Create the corresponding ledger entry
+    const ledgerEntry = await tx.ledgerEntry.create({
+        data: {
+            walletId: wallet.id,
+            type: "UNLOCK",
+            availableDelta: amount,
+            lockedDelta: new Prisma.Decimal(amount).negated(),
+            referenceType: "ORDER",
+            referenceId: orderId,
+            idempotencyKey,
+        },
+    });
+
+    // 5. Fetch the updated wallet
+    const updatedWallet = await tx.wallet.findUnique({
+        where: {
+            id: wallet.id,
+        },
+        include: {
+            asset: true,
+        },
+    });
+
+    if (!updatedWallet) {
+        throw new Error("WALLET_NOT_FOUND");
+    }
+
+    return {
+        wallet: updatedWallet,
+        ledgerEntry,
+        alreadyProcessed: false,
+    };
+};
+
 
 export const getLedgerHistory = async (
     userId: string,

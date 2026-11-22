@@ -7,7 +7,7 @@ import walletRoutes from './modules/wallet/wallet.routes.js';
 import ledgerRoutes from './modules/ledger/ledger.routes.js';
 import tradingPairRouter from "./modules/trading-pair/trading-pair-route.js"
 import cookieParser from 'cookie-parser';
-
+import orderRouter from "./modules/order/order.route.js";
 const app = express();
 
 app.use(cors({
@@ -25,5 +25,5 @@ app.use("/api/assets", assetRoutes);
 app.use("/api/wallets", walletRoutes);
 app.use("/api/ledger", ledgerRoutes);
 app.use("/api/trading-pairs", tradingPairRouter)
-
+app.use("/api/orders", orderRouter);
 export default app;
